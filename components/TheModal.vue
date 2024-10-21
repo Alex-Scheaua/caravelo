@@ -14,9 +14,9 @@
             <div class="controls-container__quantity">
               <span>Flights Left</span>
               <div>
-                <QuotaChangeButton @click="quotaRemove">-</QuotaChangeButton>
+                <QuotaChangeButton class="quota-remove" @click="quotaRemove()">-</QuotaChangeButton>
                 {{quotaToBeUpdated}}
-                <QuotaChangeButton @click="quotaAdd">+</QuotaChangeButton>
+                <QuotaChangeButton class="quota-add" @click="quotaAdd()">+</QuotaChangeButton>
               </div>
             </div>
             <div class="controls-container__reason">
@@ -30,6 +30,7 @@
           </div>
           <div class="button-container">
             <GeneralButton
+                class="save-button"
                 :disabled="isSaveButtonDisabled"
                 @click="saveUser"
             >
