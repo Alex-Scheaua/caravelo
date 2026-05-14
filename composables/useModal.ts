@@ -1,24 +1,16 @@
-import { useUsers } from "~/composables/useUsers";
-
-const { userList } = useUsers()
-
-const isModalOpen = ref(false)
-const selectedUser = ref()
+import type { User } from "~/types";
 
 export const useModal = () => {
-    /**
-     * Opens a modal and selects a user based on the provided user ID.
-     *
-     * @param {number} userId - The ID of the user to be selected and displayed in the modal.
-     */
+    const { userList } = useUsers()
+
+    const isModalOpen = useState('isModalOpen', () => false)
+    const selectedUser = useState<User | null>('selectedUser', () => null)
+
     const openModal = (userId: number) => {
-        selectedUser.value = userList.value.find(user => user.id === userId )
+        selectedUser.value = userList.value.find(user => user.id === userId) ?? null
         isModalOpen.value = true
     }
 
-    /**
-     * Closes the modal and resets the `selectedUser` value.
-     */
     const closeModal = () => {
         isModalOpen.value = false
         selectedUser.value = null
@@ -26,8 +18,8 @@ export const useModal = () => {
 
     return {
         selectedUser,
-        isModalOpen: computed(() => isModalOpen.value),
+        isModalOpen,
         openModal,
-        closeModal
+        closeModal,
     }
 }

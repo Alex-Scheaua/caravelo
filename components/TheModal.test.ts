@@ -1,5 +1,4 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, it, expect, vi } from 'vitest'
 import TheModal from './TheModal.vue'
 
 describe('TheModal', () => {
@@ -40,12 +39,11 @@ describe('TheModal', () => {
     expect(saveButton.exists()).toBe(true)
 
     component.vm.selectedUser.value = mockSelectedUser
-
     component.vm.selectedReasonId.value = 2
-    component.vm.quotaToBeUpdated.value = undefined
+    component.vm.quotaToBeUpdated.value = 2
 
     await component.vm.$nextTick()
 
-    expect(component.find('.save-button]').isDisabled()).toBe(true)
+    expect(component.find('.save-button').isDisabled()).toBe(true)
   })
 })

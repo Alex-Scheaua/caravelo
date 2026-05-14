@@ -35,7 +35,7 @@ const { isModalOpen } = useModal()
 
 .container {
   position: relative;
-  margin: 0 auto;
+  margin: 3rem auto 0;
   width: 100%;
 
   @include for-desktop {

@@ -1,15 +1,14 @@
-import { expect, describe, it } from 'vitest'
-import { shallowMount } from '@vue/test-utils'
+import { mountSuspended } from '@nuxt/test-utils/runtime'
 import GeneralButton from './GeneralButton.vue'
 
-describe('LocaleSidebar', () => {
+describe('GeneralButton', () => {
   it('Can mount the component', async () => {
-    const component = shallowMount(GeneralButton)
+    const component = await mountSuspended(GeneralButton)
     expect(component.exists()).toBe(true)
   })
 
-  it('Can mount the component', async () => {
-    const component = shallowMount(GeneralButton, {
+  it('disables the button when disabled prop is true', async () => {
+    const component = await mountSuspended(GeneralButton, {
       props: {
         disabled: true,
       }

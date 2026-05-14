@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     //Randomly throw errors for the Notification
     const successOrFail = Math.random() > 0.5 ? 200 : 404;
 
-    await $fetch(`https://httpstat.us/${successOrFail}?sleep=500`)
+    await $fetch(`https://tools-httpstatus.pickup-services.com/${successOrFail}?sleep=500`)
 
     return body
 })

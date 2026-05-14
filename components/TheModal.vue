@@ -110,8 +110,8 @@ onMounted(async () => {
 
   &__container {
     position: fixed;
-    width: 40rem;
-    height: 20rem;
+    max-width: 40rem;
+    min-height: 20rem;
     background: #fff;
   }
 
@@ -133,7 +133,12 @@ onMounted(async () => {
       height: 100%;
       display: flex;
       justify-content: center;
+      flex-direction: column;
       gap: 1rem;
+
+      @media (min-width: 768px) {
+        flex-direction: row;
+      }
 
       &__quantity {
         padding: .8rem 3rem;
