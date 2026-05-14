@@ -11,7 +11,6 @@
 
 <script lang="ts" setup>
 import type { User } from "~/types";
-import { useModal } from "~/composables";
 import Pen from "assets/icons/pen.vue";
 
 const { openModal } = useModal()

@@ -1,7 +1,7 @@
 # Caravelo App
 
 ## Tech Stack
-- Nuxt 3 (SPA mode, SSR disabled, static preset)
+- Nuxt 4 (SPA mode, SSR disabled, static preset)
 - Vue 3 with `<script lang="ts" setup>`
 - Capacitor 8 (iOS)
 - SCSS (scoped styles, `api: 'modern'`)
@@ -35,6 +35,7 @@ assets/         — icons/ (inline SVG components), index.scss (global reset)
 ### Imports
 - Use `~/` alias when importing from a different folder.
 - Use `./` relative imports for files in the same folder.
+- Composables are auto-imported by Nuxt — never import them explicitly.
 
 ### Components
 - PascalCase filenames (`GeneralButton.vue`, `UsersList.vue`).
@@ -46,6 +47,7 @@ assets/         — icons/ (inline SVG components), index.scss (global reset)
 - Prefer `mountSuspended` from `@nuxt/test-utils/runtime` over `shallowMount`.
 - Vitest globals enabled — do NOT import `describe`, `it`, `expect`, `vi`.
 - Component tests co-located next to the component: `ComponentName.test.ts`.
+- Never modify production components to accommodate tests — mock dependencies in test files instead.
 
 ### API Routes (Nitro)
 - kebab-case filenames in `server/api/` (`get-users.ts`, `update-flights-quota.ts`).

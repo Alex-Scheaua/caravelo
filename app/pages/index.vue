@@ -14,7 +14,6 @@
 <script lang="ts" setup>
 import logo from '~/assets/icons/logo.vue'
 import UsersList from "~/components/UsersList.vue";
-import { useModal } from "~/composables";
 
 const { isModalOpen } = useModal()
 

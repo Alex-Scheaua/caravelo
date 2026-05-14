@@ -43,7 +43,6 @@
 </template>
 <script lang="ts"setup>
 import cross from '~/assets/icons/cross.vue'
-import { useModal, useUsers } from "~/composables";
 
 const { selectedUser , closeModal } = useModal()
 const { loading, updateUserFlightQuota } = useUsers()

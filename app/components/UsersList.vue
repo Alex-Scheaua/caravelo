@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useUsers } from "~/composables";
+
 
 const { retrieveUsers, userList } = useUsers()
 

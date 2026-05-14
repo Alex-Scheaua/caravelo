@@ -1,10 +1,14 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import TheModal from './TheModal.vue'
+import TheModal from '../../components/TheModal.vue'
+
+vi.stubGlobal('$fetch', async () => ({ add: [], remove: [] }))
+
+afterAll(() => {
+  vi.unstubAllGlobals()
+})
 
 describe('TheModal', () => {
   const mockSelectedUser = { name: 'John Doe', id: 1, flightsQuota: 2 }
-
-  vi.stubGlobal('$fetch', () => () => {})
 
   it('should mount the component correctly', async () => {
     const component = await mountSuspended(TheModal)
@@ -17,7 +21,7 @@ describe('TheModal', () => {
 
   it('should increment and decrement the quota correctly', async () => {
     const component = await mountSuspended(TheModal)
-    component.vm.quotaToBeUpdated.value = 1;
+    component.vm.quotaToBeUpdated = 1
 
     const quotaRemoveButton = component.find('.quota-remove')
     const quotaAddButton = component.find('.quota-add')
@@ -38,9 +42,9 @@ describe('TheModal', () => {
     const saveButton = component.find('.save-button')
     expect(saveButton.exists()).toBe(true)
 
-    component.vm.selectedUser.value = mockSelectedUser
-    component.vm.selectedReasonId.value = 2
-    component.vm.quotaToBeUpdated.value = 2
+    component.vm.selectedUser = mockSelectedUser
+    component.vm.selectedReasonId = 2
+    component.vm.quotaToBeUpdated = 2
 
     await component.vm.$nextTick()
 
