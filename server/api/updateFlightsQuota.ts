@@ -1,5 +1,5 @@
-import { SELECT_BY_ID, UPDATE_QUOTA } from '../sql/users'
-import { INSERT as INSERT_CHANGE } from '../sql/quota-changes'
+import { SELECT_BY_ID, UPDATE_QUOTA } from '#server/sql/users'
+import { INSERT as INSERT_CHANGE } from '#server/sql/quota-changes'
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event)
@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
 
     const transaction = db.transaction(() => {
         updateUser.run(newQuota, body.id)
-        insertChange.run(body.id, oldQuota, newQuota, body.reason || '')
+        insertChange.run(body.id, oldQuota, newQuota, body.reasonId || null)
     })
 
     transaction()

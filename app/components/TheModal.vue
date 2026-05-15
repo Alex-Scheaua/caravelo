@@ -83,10 +83,9 @@ const quotaAdd = () => {
 }
 
 const saveUser = async () => {
-  const selectedReason = flightQuotaSelectOptions.value.find(o => o.id === selectedReasonId.value)
   await updateUserFlightQuota(
     { ...selectedUser.value, flightsQuota: quotaToBeUpdated.value },
-    selectedReason?.message
+    selectedReasonId.value
   )
 
   closeModal()

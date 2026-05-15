@@ -1,44 +1,16 @@
+import { GET_REASONS } from "#server/sql/change-reasons";
+
 export default defineEventHandler(async (event) => {
-    return {
-        add: [
-            {
-                message: 'Airline canceled flight',
-                id: 1
-            },
-            {
-                message: 'Subscriber canceled flight',
-                id: 2
-            },
-            {
-                message: 'Customer compensation',
-                id: 3
-            },
-            {
-                message: 'Other',
-                id: 4
-            }
-        ],
-        remove: [
-            {
-                message: 'Flight not redeposited after a flight cancellation',
-                id: 5
-            },
-            {
-                message: 'Subscriber had log in or password issues',
-                id: 6
-            },
-            {
-                message: 'Subscriber had issues when booking',
-                id: 7
-            },
-            {
-                message: 'Subscription has not renewed correctly',
-                id: 8
-            },
-            {
-                message: 'Other',
-                id: 9
-            }
-        ]
+    const db = useDB()
+
+    const response = db.prepare(GET_REASONS).all()
+
+    const reasons = {
+        add: [],
+        remove: []
     }
+
+    response?.forEach(reason => reasons[reason.type].push(reason))
+
+    return reasons
 })

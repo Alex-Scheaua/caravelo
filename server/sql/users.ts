@@ -6,4 +6,4 @@ export const UPDATE_QUOTA = 'UPDATE users SET flights_quota = ? WHERE id = ?'
 
 export const COUNT_ALL = 'SELECT COUNT(*) as count FROM users'
 
-export const INSERT = 'INSERT INTO users (id, name, flights_quota) VALUES (?, ?, ?)'
+export const INSERT = 'INSERT INTO users (name, flights_quota) VALUES (?, ?)'

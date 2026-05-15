@@ -20,12 +20,12 @@ export const useUsers = () => {
         }
     }
 
-    const updateUserFlightQuota = async (user: User, reason?: string) => {
+    const updateUserFlightQuota = async (user: User, reasonId?: number) => {
         try {
             loading.value = true
             const newUser = await $fetch(`/api/updateFlightsQuota`, {
                 method: "POST",
-                body: JSON.stringify({ ...user, reason }),
+                body: JSON.stringify({ ...user, reasonId }),
             })
 
             const userInUserList = userList.value.find(u => u.id === newUser.id)!

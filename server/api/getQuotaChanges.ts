@@ -1,4 +1,4 @@
-import { SELECT_BY_USER } from '../sql/quota-changes'
+import { SELECT_BY_USER } from '#server/sql/quota-changes'
 
 export default defineEventHandler(async (event) => {
     const query = getQuery(event)
@@ -9,7 +9,5 @@ export default defineEventHandler(async (event) => {
     }
 
     const db = useDB()
-    const changes = db.prepare(SELECT_BY_USER).all(userId)
-
-    return changes
+    return db.prepare(SELECT_BY_USER).all(userId)
 })

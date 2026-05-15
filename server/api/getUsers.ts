@@ -1,4 +1,4 @@
-import { SELECT_ALL } from '../sql/users'
+import { SELECT_ALL } from '#server/sql/users'
 
 export default defineEventHandler(async (event) => {
     const db = useDB()

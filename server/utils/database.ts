@@ -1,6 +1,9 @@
 import Database from 'better-sqlite3'
 import { resolve } from 'pathe'
-import * as UserSql from '../sql/users'
+import * as UserSql from '#server/sql/users'
+import { CREATE_TABLE } from "#server/sql/create-table";
+import * as change_reasons from "#server/sql/change-reasons";
+import reasons from '#server/sql/seed-data/quota-change-reasons'
 
 let _db: Database.Database | null = null
 
@@ -16,30 +19,31 @@ function initDb(): Database.Database {
   db.pragma('journal_mode = WAL')
   db.pragma('foreign_keys = ON')
 
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY,
-      name TEXT NOT NULL,
-      flights_quota INTEGER NOT NULL DEFAULT 0,
-      created_at TEXT NOT NULL DEFAULT (datetime('now'))
-    );
+  db.exec(CREATE_TABLE)
 
-    CREATE TABLE IF NOT EXISTS quota_changes (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user_id INTEGER NOT NULL,
-      old_quota INTEGER NOT NULL,
-      new_quota INTEGER NOT NULL,
-      reason TEXT NOT NULL DEFAULT '',
-      changed_at TEXT NOT NULL DEFAULT (datetime('now')),
-      FOREIGN KEY (user_id) REFERENCES users(id)
-    );
-  `)
+  const countReasonTypes = db.prepare(change_reasons.COUNT_ALL_REASON_TYPES).get() as {count: number}
+  if(countReasonTypes.count === 0) {
+    const insertReasonType = db.prepare(change_reasons.INSERT_REASON_TYPE)
+    insertReasonType.run('add')
+    insertReasonType.run('remove')
+  }
+
+  const countReasons = db.prepare(change_reasons.COUNT_ALL_REASONS).get() as {count: number}
+  if(countReasons.count === 0) {
+    const insertReason = db.prepare(change_reasons.INSERT)
+
+    for(const type in reasons) {
+      reasons[type].forEach(reason => {
+        insertReason.run(reason.message, type==='add' ? 1 :2)
+      })
+    }
+  }
 
   const count = db.prepare(UserSql.COUNT_ALL).get() as { count: number }
   if (count.count === 0) {
     const insertUser = db.prepare(UserSql.INSERT)
-    insertUser.run(1, 'John Doe', 3)
-    insertUser.run(12, 'John Doe Alexandrovich', 2)
+    insertUser.run('John Doe', 3)
+    insertUser.run('John Alexandrovich', 2)
   }
 
   return db
