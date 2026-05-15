@@ -1,23 +1,30 @@
-import type { User } from "~/types";
+import type { Component } from 'vue'
+
+interface ModalEntry {
+  component: Component
+  props?: Record<string, any>
+}
 
 export const useModal = () => {
-    const { userList } = useUsers()
+    const modalStack = useState<ModalEntry[]>('modalStack', () => [])
 
-    const isModalOpen = useState('isModalOpen', () => false)
-    const selectedUser = useState<User | null>('selectedUser', () => null)
-
-    const openModal = (userId: number) => {
-        selectedUser.value = userList.value.find(user => user.id === userId) ?? null
-        isModalOpen.value = true
+    const openModal = (entry: ModalEntry) => {
+        modalStack.value.push(entry)
     }
 
     const closeModal = () => {
-        isModalOpen.value = false
-        selectedUser.value = null
+        modalStack.value.pop()
     }
 
+    const currentEntry = computed(() => {
+        const stack = modalStack.value
+        return stack.length > 0 ? stack[stack.length - 1] : null
+    })
+
+    const isModalOpen = computed(() => modalStack.value.length > 0)
+
     return {
-        selectedUser,
+        currentEntry,
         isModalOpen,
         openModal,
         closeModal,

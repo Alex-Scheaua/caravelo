@@ -38,6 +38,24 @@ export const useUsers = () => {
         loading.value = false
     }
 
+    const addUser = async (name: string, flightsQuota = 0) => {
+        await $fetch(`/api/createUser`, {
+            method: "POST",
+            body: JSON.stringify({ name, flightsQuota }),
+        })
+
+        await retrieveUsers()
+    }
+
+    const removeUser = async (id: number) => {
+        await $fetch(`/api/deleteUser`, {
+            method: "POST",
+            body: JSON.stringify({ id }),
+        })
+
+        await retrieveUsers()
+    }
+
     const updateUserSavedSuccessfully = (value: boolean) => {
         userSavedSuccessfully.value = value
 
@@ -55,5 +73,7 @@ export const useUsers = () => {
         retrieveUsers,
         retrieveQuotaChanges,
         updateUserFlightQuota,
+        addUser,
+        removeUser,
     }
 }

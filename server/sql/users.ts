@@ -7,3 +7,9 @@ export const UPDATE_QUOTA = 'UPDATE users SET flights_quota = ? WHERE id = ?'
 export const COUNT_ALL = 'SELECT COUNT(*) as count FROM users'
 
 export const INSERT = 'INSERT INTO users (name, flights_quota) VALUES (?, ?)'
+
+export const SELECT_USER_BY_ID = 'SELECT id, name, flights_quota AS flightsQuota FROM users WHERE id = ?'
+
+export const DELETE_USER = 'DELETE FROM users WHERE id = ?'
+
+export const DELETE_USER_QUOTA_CHANGES = 'DELETE FROM quota_changes WHERE user_id = ?'

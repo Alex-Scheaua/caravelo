@@ -1,0 +1,58 @@
+import { mountSuspended } from '@nuxt/test-utils/runtime'
+import EditFlightsContent from './EditFlightsContent.vue'
+
+vi.stubGlobal('$fetch', async () => ({ add: [], remove: [] }))
+
+afterAll(() => {
+  vi.unstubAllGlobals()
+})
+
+describe('EditFlightsContent', () => {
+  const mockUser = { name: 'John Doe', id: 1, flightsQuota: 2 }
+
+  it('should mount the component correctly', async () => {
+    const component = await mountSuspended(EditFlightsContent, {
+      props: { user: mockUser }
+    })
+
+    expect(component.exists()).toBe(true)
+    expect(component.find('.title').text()).toBe('Edit flights')
+    expect(component.find('.subtitle').text()).toBe('Add or remove flights from the subscriber')
+  })
+
+  it('should increment and decrement the quota correctly', async () => {
+    const component = await mountSuspended(EditFlightsContent, {
+      props: { user: mockUser }
+    })
+
+    component.vm.quotaToBeUpdated = 1
+
+    const quotaRemoveButton = component.find('.quota-remove')
+    const quotaAddButton = component.find('.quota-add')
+    await quotaAddButton.trigger('click')
+
+    expect(component.text()).toContain('2')
+
+    await quotaAddButton.trigger('click')
+    expect(component.text()).toContain('3')
+
+    await quotaRemoveButton.trigger('click')
+    expect(component.text()).toContain('2')
+  })
+
+  it('should disable save button when conditions are not met', async () => {
+    const component = await mountSuspended(EditFlightsContent, {
+      props: { user: mockUser }
+    })
+
+    const saveButton = component.find('.save-button')
+    expect(saveButton.exists()).toBe(true)
+
+    component.vm.selectedReasonId = 2
+    component.vm.quotaToBeUpdated = 2
+
+    await component.vm.$nextTick()
+
+    expect(component.find('.save-button').isDisabled()).toBe(true)
+  })
+})

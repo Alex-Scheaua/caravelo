@@ -8,14 +8,12 @@
       <UsersList />
     </div>
   </div>
-  <TheModal v-if="isModalOpen" />
+  <TheModal />
 </template>
 
 <script lang="ts" setup>
 import logo from '~/assets/icons/logo.vue'
 import UsersList from "~/components/UsersList.vue";
-
-const { isModalOpen } = useModal()
 
 </script>
 

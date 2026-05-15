@@ -52,6 +52,17 @@ assets/         — icons/ (inline SVG components), index.scss (global reset)
 ### API Routes (Nitro)
 - kebab-case filenames in `server/api/` (`get-users.ts`, `update-flights-quota.ts`).
 - Return data directly from the handler.
+- Existing routes: `getUsers`, `updateFlightsQuota`, `getFlightQuotaReasons`, `getQuotaChanges`, `createUser`, `deleteUser`.
+- Deleting a user requires cascading: delete `quota_changes` first, then the user row.
+
+### Modals
+- `TheModal` — the only modal shell. Renders dynamic content via `<component :is="currentEntry.component" v-bind="currentEntry.props" />`.
+- Content components rendered inside `TheModal`: `EditFlightsContent`, `AddUserForm`, `DeleteUserConfirm`.
+- `useModal` composable manages a stack of entries via `useState<ModalEntry[]>('modalStack', ...)`.
+- To open a modal: `openModal({ component: MyContent, props: { ... } })`.
+- `closeModal()` pops the last entry from the stack.
+- `isModalOpen` is `true` when the stack is non-empty.
+- Props are optional and only passed when needed.
 
 ### Types
 - Global types: define in `types/` files, do NOT barrel-export via `index.ts`.

@@ -1,53 +1,60 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { defineComponent } from 'vue'
 import TheModal from './TheModal.vue'
 
-vi.stubGlobal('$fetch', async () => ({ add: [], remove: [] }))
-
-afterAll(() => {
-  vi.unstubAllGlobals()
-})
-
 describe('TheModal', () => {
-  const mockSelectedUser = { name: 'John Doe', id: 1, flightsQuota: 2 }
-
-  it('should mount the component correctly', async () => {
+  it('should not render when modal stack is empty', async () => {
     const component = await mountSuspended(TheModal)
 
-    expect(component.exists()).toBe(true)
+    expect(component.find('.modal').exists()).toBe(false)
+  })
+
+  it('should render when modal stack has an entry', async () => {
+    const modal = useModal()
+    const testComponent = defineComponent({
+      template: '<div class="test-content">Test</div>'
+    })
+
+    modal.openModal({ component: testComponent })
+
+    const component = await mountSuspended(TheModal)
+
     expect(component.find('.modal').exists()).toBe(true)
-    expect(component.find('.title').text()).toBe('Edit flights')
-    expect(component.find('.subtitle').text()).toBe('Add or remove flights from the subscriber')
+    expect(component.find('.test-content').exists()).toBe(true)
+    expect(component.find('.test-content').text()).toBe('Test')
+
+    modal.closeModal()
   })
 
-  it('should increment and decrement the quota correctly', async () => {
+  it('should render component with props', async () => {
+    const modal = useModal()
+    const testComponent = defineComponent({
+      props: ['message'],
+      template: '<div class="test-props">{{ message }}</div>'
+    })
+
+    modal.openModal({ component: testComponent, props: { message: 'Hello props' } })
+
     const component = await mountSuspended(TheModal)
-    component.vm.quotaToBeUpdated = 1
 
-    const quotaRemoveButton = component.find('.quota-remove')
-    const quotaAddButton = component.find('.quota-add')
-    await quotaAddButton.trigger('click')
+    expect(component.find('.test-props').text()).toBe('Hello props')
 
-    expect(component.find('.controls-container__quantity').text()).toContain('2')
-
-    await quotaAddButton.trigger('click')
-    expect(component.text()).toContain('3')
-
-    await quotaRemoveButton.trigger('click')
-    expect(component.text()).toContain('2')
+    modal.closeModal()
   })
 
-  it('should disable save button when conditions are not met', async () => {
+  it('should close modal when overlay is clicked', async () => {
+    const modal = useModal()
+    const testComponent = defineComponent({
+      template: '<div>Content</div>'
+    })
+
+    modal.openModal({ component: testComponent })
+
     const component = await mountSuspended(TheModal)
+    expect(component.find('.modal').exists()).toBe(true)
 
-    const saveButton = component.find('.save-button')
-    expect(saveButton.exists()).toBe(true)
+    await component.find('.modal__overlay').trigger('click')
 
-    component.vm.selectedUser = mockSelectedUser
-    component.vm.selectedReasonId = 2
-    component.vm.quotaToBeUpdated = 2
-
-    await component.vm.$nextTick()
-
-    expect(component.find('.save-button').isDisabled()).toBe(true)
+    expect(component.find('.modal').exists()).toBe(false)
   })
 })
