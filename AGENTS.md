@@ -12,17 +12,20 @@
 - Dev: `yarn dev`
 - Build: `yarn build`
 - Generate static: `yarn generate`
-- Test: `yarn vitest`
+- Test: `vitest`
 - Test single file: `npx vitest path/to/test`
 
 ## Project Structure
 ```
-pages/          — page components (index.vue)
-components/     — PascalCase .vue components
-composables/    — shared state & logic (useState-based)
-server/api/     — kebab-case Nitro API routes
-types/          — global TypeScript types (no barrel exports)
-assets/         — icons/ (inline SVG components), index.scss (global reset)
+app/pages/          — page components (index.vue)
+app/components/     — PascalCase .vue components
+app/composables/    — shared state & logic (useState-based)
+app/assets/         — icons/ (inline SVG components), index.scss (global reset)
+server/api/         — kebab-case Nitro API routes
+server/data/        — SQLite database files
+server/sql/         — SQL query modules
+server/utils/       — server utilities (database.ts)
+types/              — global TypeScript types (.d.ts declarations, no export)
 ```
 
 ## Conventions
@@ -65,8 +68,8 @@ assets/         — icons/ (inline SVG components), index.scss (global reset)
 - Props are optional and only passed when needed.
 
 ### Types
-- Global types: define in `types/` files, do NOT barrel-export via `index.ts`.
-- Types are auto-available via `~/types/...` imports.
+- Global types: define in `types/` as `.d.ts` declaration files — no `export` keyword, no barrel exports.
+- Types are globally available without any import statement.
 
 ### Styling
 - CSS units: `rem` (not px, em, etc.).

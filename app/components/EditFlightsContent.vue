@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { User, QuotaChange } from "~/types";
+
 
 const props = defineProps<{
   user: User

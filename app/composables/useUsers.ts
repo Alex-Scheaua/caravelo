@@ -1,5 +1,3 @@
-import type { User, QuotaChange } from "~/types";
-
 export const useUsers = () => {
     const userList = useState<User[]>('users', () => [])
     const userSavedSuccessfully = useState<boolean | null>('userSavedSuccessfully', () => null)

@@ -1,4 +1,4 @@
-export type QuotaChange = {
+type QuotaChange = {
     id: number,
     userId: number,
     oldQuota: number,

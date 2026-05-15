@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { User } from "~/types";
+
 
 const props = defineProps<{
   user: User

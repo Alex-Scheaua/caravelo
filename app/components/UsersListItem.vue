@@ -15,7 +15,6 @@
 </template>
 
 <script lang="ts" setup>
-import type { User } from "~/types";
 import Pen from "assets/icons/pen.vue";
 import EditFlightsContent from './EditFlightsContent.vue'
 import DeleteUserConfirm from './DeleteUserConfirm.vue'
