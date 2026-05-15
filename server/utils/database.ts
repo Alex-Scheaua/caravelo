@@ -21,6 +21,10 @@ function initDb(): Database.Database {
 
   db.exec(CREATE_TABLE)
 
+  return db
+}
+
+function seedDb(db: Database.Database): void {
   const countReasonTypes = db.prepare(change_reasons.COUNT_ALL_REASON_TYPES).get() as {count: number}
   if(countReasonTypes.count === 0) {
     const insertReasonType = db.prepare(change_reasons.INSERT_REASON_TYPE)
@@ -45,13 +49,12 @@ function initDb(): Database.Database {
     insertUser.run('John Doe', 3)
     insertUser.run('John Alexandrovich', 2)
   }
-
-  return db
 }
 
 export function useDB(): Database.Database {
   if (!_db) {
     _db = initDb()
+    seedDb(_db)
   }
   return _db
 }
