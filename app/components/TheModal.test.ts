@@ -1,5 +1,5 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import TheModal from '../../components/TheModal.vue'
+import TheModal from './TheModal.vue'
 
 vi.stubGlobal('$fetch', async () => ({ add: [], remove: [] }))
 

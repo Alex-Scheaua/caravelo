@@ -1,9 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  // ssr: false,
-  // nitro: {
-  //   preset: "static"
-  // },
   compatibilityDate: '2026-05-14',
   css: ['~/assets/index.scss'],
   devtools: { enabled: true },

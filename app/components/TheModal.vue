@@ -37,28 +37,34 @@
               {{loading ? 'LOADING...' : 'SAVE CHANGES'}}
             </GeneralButton>
           </div>
+          <div v-if="quotaChanges.length" class="history-section">
+            <div class="history-section__title">Change History</div>
+            <div class="history-section__list">
+              <div v-for="change in quotaChanges" :key="change.id" class="history-section__item">
+                <span class="history-section__item-quota">
+                  {{change.oldQuota}} &rarr; {{change.newQuota}}
+                </span>
+                <span class="history-section__item-reason">{{change.reason || '—'}}</span>
+                <span class="history-section__item-date">{{change.changedAt}}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
   </div>
 </template>
 <script lang="ts"setup>
 import cross from '~/assets/icons/cross.vue'
+import type { QuotaChange } from "~/types";
 
 const { selectedUser , closeModal } = useModal()
-const { loading, updateUserFlightQuota } = useUsers()
+const { loading, updateUserFlightQuota, retrieveQuotaChanges, quotaChanges } = useUsers()
 
 const quotaToBeUpdated = ref<number>(0)
 const selectedReasonId = ref<number>(0)
 
 const flightsQuotaUpdateReasons = ref({})
 
-/**
- * - Returns an empty array if the `quotaToBeUpdated` is equal to the `selectedUser`'s current flight quota.
- * - If `quotaToBeUpdated` is greater than the current flight quota, returns the options for increasing the flight quota.
- * - If `quotaToBeUpdated` is less than the current flight quota, returns the options for decreasing the flight quota.
- *
- * @returns {Array} An array of options for updating the flight quota, depending on whether it is being increased or decreased.
- */
 const flightQuotaSelectOptions = computed(() => {
   if(quotaToBeUpdated.value === selectedUser.value?.flightsQuota) return []
   if(quotaToBeUpdated.value! > selectedUser.value?.flightsQuota) return flightsQuotaUpdateReasons.value.add
@@ -77,10 +83,11 @@ const quotaAdd = () => {
 }
 
 const saveUser = async () => {
-  await updateUserFlightQuota({
-    ...selectedUser.value,
-    flightsQuota: quotaToBeUpdated.value
-  })
+  const selectedReason = flightQuotaSelectOptions.value.find(o => o.id === selectedReasonId.value)
+  await updateUserFlightQuota(
+    { ...selectedUser.value, flightsQuota: quotaToBeUpdated.value },
+    selectedReason?.message
+  )
 
   closeModal()
 }
@@ -88,6 +95,10 @@ const saveUser = async () => {
 onMounted(async () => {
   quotaToBeUpdated.value = selectedUser.value?.flightsQuota
   flightsQuotaUpdateReasons.value = await $fetch('/api/getFlightQuotaReasons')
+
+  if (selectedUser.value) {
+    retrieveQuotaChanges(selectedUser.value.id)
+  }
 })
 </script>
 <style lang="scss" scoped>
@@ -111,6 +122,8 @@ onMounted(async () => {
     position: fixed;
     max-width: 40rem;
     min-height: 20rem;
+    max-height: 90vh;
+    overflow-y: auto;
     background: #fff;
   }
 
@@ -184,6 +197,48 @@ onMounted(async () => {
           color: gray;
           padding: .5rem 1rem;
           cursor: auto;
+        }
+      }
+    }
+
+    .history-section {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #eee;
+
+      &__title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      &__list {
+        display: flex;
+        flex-direction: column;
+        gap: .75rem;
+      }
+
+      &__item {
+        display: flex;
+        flex-direction: column;
+        gap: .25rem;
+        padding: .75rem;
+        background: #f9f9f9;
+        border-radius: .3rem;
+        font-size: .85rem;
+
+        &-quota {
+          font-weight: 600;
+          color: #333;
+        }
+
+        &-reason {
+          color: #555;
+        }
+
+        &-date {
+          color: #999;
+          font-size: .75rem;
         }
       }
     }

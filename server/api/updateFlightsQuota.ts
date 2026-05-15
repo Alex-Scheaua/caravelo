@@ -1,15 +1,35 @@
 export default defineEventHandler(async (event) => {
     const body = await readBody(event)
 
-    //Run a check in BE to make sure data was not altered
-    if(body.flightsQuota > 3 || body.flightsQuota < 0) {
+    if (body.flightsQuota > 3 || body.flightsQuota < 0) {
         throw new Error('Flight Quota is out of range')
     }
 
-    //Randomly throw errors for the Notification
-    const successOrFail = Math.random() > 0.5 ? 200 : 404;
+    const db = useDB()
 
-    await $fetch(`https://tools-httpstatus.pickup-services.com/${successOrFail}?sleep=500`)
+    const current = db.prepare('SELECT flights_quota FROM users WHERE id = ?').get(body.id) as { flights_quota: number } | undefined
+    if (!current) {
+        throw new Error('User not found')
+    }
 
-    return body
+    const oldQuota = current.flights_quota
+    const newQuota = body.flightsQuota
+
+    const updateUser = db.prepare('UPDATE users SET flights_quota = ? WHERE id = ?')
+    const insertChange = db.prepare(
+        'INSERT INTO quota_changes (user_id, old_quota, new_quota, reason) VALUES (?, ?, ?, ?)'
+    )
+
+    const transaction = db.transaction(() => {
+        updateUser.run(newQuota, body.id)
+        insertChange.run(body.id, oldQuota, newQuota, body.reason || '')
+    })
+
+    transaction()
+
+    return {
+        id: body.id,
+        name: body.name,
+        flightsQuota: newQuota
+    }
 })

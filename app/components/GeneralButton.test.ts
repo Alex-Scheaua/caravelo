@@ -1,5 +1,5 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import GeneralButton from '../../components/GeneralButton.vue'
+import GeneralButton from './GeneralButton.vue'
 
 describe('GeneralButton', () => {
   it('Can mount the component', async () => {
