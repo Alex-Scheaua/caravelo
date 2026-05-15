@@ -1,6 +1,4 @@
 export default defineEventHandler(async (event) => {
-    await $fetch('https://tools-httpstatus.pickup-services.com/200?sleep=500')
-
     return {
         add: [
             {

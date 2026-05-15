@@ -1,5 +1,6 @@
 import Database from 'better-sqlite3'
 import { resolve } from 'pathe'
+import * as UserSql from '../sql/users'
 
 let _db: Database.Database | null = null
 
@@ -34,9 +35,9 @@ function initDb(): Database.Database {
     );
   `)
 
-  const count = db.prepare('SELECT COUNT(*) as count FROM users').get() as { count: number }
+  const count = db.prepare(UserSql.COUNT_ALL).get() as { count: number }
   if (count.count === 0) {
-    const insertUser = db.prepare('INSERT INTO users (id, name, flights_quota) VALUES (?, ?, ?)')
+    const insertUser = db.prepare(UserSql.INSERT)
     insertUser.run(1, 'John Doe', 3)
     insertUser.run(12, 'John Doe Alexandrovich', 2)
   }

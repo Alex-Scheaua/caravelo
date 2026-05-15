@@ -1,3 +1,6 @@
+import { SELECT_BY_ID, UPDATE_QUOTA } from '../sql/users'
+import { INSERT as INSERT_CHANGE } from '../sql/quota-changes'
+
 export default defineEventHandler(async (event) => {
     const body = await readBody(event)
 
@@ -7,7 +10,7 @@ export default defineEventHandler(async (event) => {
 
     const db = useDB()
 
-    const current = db.prepare('SELECT flights_quota FROM users WHERE id = ?').get(body.id) as { flights_quota: number } | undefined
+    const current = db.prepare(SELECT_BY_ID).get(body.id) as { flights_quota: number } | undefined
     if (!current) {
         throw new Error('User not found')
     }
@@ -15,10 +18,8 @@ export default defineEventHandler(async (event) => {
     const oldQuota = current.flights_quota
     const newQuota = body.flightsQuota
 
-    const updateUser = db.prepare('UPDATE users SET flights_quota = ? WHERE id = ?')
-    const insertChange = db.prepare(
-        'INSERT INTO quota_changes (user_id, old_quota, new_quota, reason) VALUES (?, ?, ?, ?)'
-    )
+    const updateUser = db.prepare(UPDATE_QUOTA)
+    const insertChange = db.prepare(INSERT_CHANGE)
 
     const transaction = db.transaction(() => {
         updateUser.run(newQuota, body.id)
